@@ -28,18 +28,39 @@ defmodule Day01 do
     |> then(fn %{left: left_values, right: right_values} ->
       [Enum.sort(left_values), Enum.sort(right_values)]
     end)
-    |> Enum.zip()
   end
 
-  def total_difference(list_of_tuples) do
-    list_of_tuples
+  def total_difference([left_values, right_values]) do
+    [left_values, right_values]
+    |> Enum.zip()
     |> Enum.reduce(0, fn {left, right}, acc ->
       abs(left - right) + acc
     end)
   end
+
+  def similarity_scores([left_values, right_values]) do
+    left_values
+    |> Enum.reduce([], fn value, acc ->
+      count =
+        right_values
+        |> Enum.count(&(&1 == value))
+
+      similarity_score = count * value
+
+      [similarity_score | acc]
+    end)
+    |> Enum.sum()
+  end
 end
 
+# Task 1
 Day01.read_file(:real)
 |> Day01.treat_input()
 |> Day01.total_difference()
+|> IO.inspect()
+
+# Task 2
+Day01.read_file(:real)
+|> Day01.treat_input()
+|> Day01.similarity_scores()
 |> IO.inspect()
